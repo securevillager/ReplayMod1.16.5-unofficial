@@ -26,12 +26,12 @@ public abstract class MixinFMLHandshakeHandler {
 
     @Inject(method = "<init>(Lnet/minecraft/network/NetworkManager;Lnet/minecraftforge/fml/network/NetworkDirection;)V", at = @At("TAIL"))
     public void replayModRecording_setupForLocalRecording(NetworkManager networkManager, NetworkDirection side, CallbackInfo ci) {
-        if (!networkManager.isLocalChannel()) {
+        if (networkManager.isLocalChannel()) {
+            // Forge already has a dedicated local-connection path.  Replacing it
+            // with remote login payloads triggers a registry injection on the
+            // render thread and can deadlock the integrated server.
             return;
         }
-
-        System.out.println("Force FML handshaking and set LoginPayloads");
-        this.messageList = NetworkRegistryAccessor.invokeGatherLoginPayloads(this.direction, false);
     }
 
     @Redirect(method = "handleRegistryLoading", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkManager;closeChannel(Lnet/minecraft/util/text/ITextComponent;)V"))
