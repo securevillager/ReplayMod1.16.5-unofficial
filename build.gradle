@@ -1,5 +1,5 @@
 buildscript {
-    def (major, minor, patch) = '1.16.4-forge'.tokenize('-')[0].tokenize('.')
+    def (major, minor, patch) = '1.16.5-forge'.tokenize('-')[0].tokenize('.')
     def mcVersion = "${major}${minor.padLeft(2, '0')}${(patch ?: '').padLeft(2, '0')}" as int
     def fabric = false
 
@@ -10,7 +10,7 @@ buildscript {
         mavenLocal()
         mavenCentral()
         maven { url = "https://plugins.gradle.org/m2/" }
-        maven { url = "https://files.minecraftforge.net/maven" }
+        maven { url = "https://maven.minecraftforge.net/" }
         maven { url='https://repo.spongepowered.org/repository/maven-public/' }
         maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url = "https://maven.tterrag.com/" }
@@ -18,14 +18,14 @@ buildscript {
     }
 
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.1', changing: true
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
         classpath 'com.github.jengelman.gradle.plugins:shadow:5.2.0'
     }
 }
 
 def mcVersionStr = "${(int)(mcVersion/10000)}.${(int)(mcVersion/100)%100}" + (mcVersion%100==0 ? '' : ".${mcVersion%100}")
-// def jGui = project.evaluationDependsOn(":jGui:1.16.4-forge")
+// def jGui = project.evaluationDependsOn(":jGui:1.16.5-forge")
 
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'net.minecraftforge.gradle'
@@ -155,7 +155,7 @@ dependencies {
         exclude group: 'com.google.code.gson', module: 'gson' // provided by MC
     }
 
-    minecraft 'net.minecraftforge:forge:1.16.4-35.1.37'
+    minecraft 'net.minecraftforge:forge:1.16.5-36.2.42'
 
     annotationProcessor "org.spongepowered:mixin:$mixinVersion"
     compileOnly "org.spongepowered:mixin:$mixinVersion"
