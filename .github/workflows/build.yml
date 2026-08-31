@@ -2,9 +2,9 @@ name: Build ReplayMod
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "1.16.5" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "1.16.5" ]
   workflow_dispatch:   # 手動実行ボタンも使えるようにする
 
 jobs:
