@@ -147,7 +147,7 @@ configurations {
 }
 
 dependencies {
-    def mixinVersion = '0.8.2'
+    def mixinVersion = '0.8.4'
     def shadeExclusions = {
         // Cannot just add these to the shade configuration because they'd be inherited by the compile configuration then
         exclude group: 'com.google.guava', module: 'guava-jdk5'

@@ -69,7 +69,9 @@ public class KeyBindingRegistry extends EventRegistrations {
     }
 
     public void handleRepeatedKeyBindings() {
-        for (Binding binding : bindings.values()) {
+        // Handlers invoked below may register new key bindings (mutating `bindings`),
+        // so we iterate over a snapshot to avoid ConcurrentModificationException.
+        for (Binding binding : new ArrayList<>(bindings.values())) {
             if (binding.keyBinding.isKeyDown()) {
                 invokeKeyBindingHandlers(binding, binding.repeatedHandlers);
             }
@@ -81,7 +83,8 @@ public class KeyBindingRegistry extends EventRegistrations {
     }
 
     private void handleKeyBindings() {
-        for (Binding binding : bindings.values()) {
+        // Same reasoning as handleRepeatedKeyBindings: handlers may mutate `bindings`.
+        for (Binding binding : new ArrayList<>(bindings.values())) {
             while (binding.keyBinding.isPressed()) {
                 invokeKeyBindingHandlers(binding, binding.handlers);
                 invokeKeyBindingHandlers(binding, binding.repeatedHandlers);
