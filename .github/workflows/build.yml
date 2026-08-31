@@ -1,70 +1,42 @@
-name: Build ReplayMod 1.16.5
+name: Build ReplayMod
 
 on:
-push:
-pull_request:
-workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:   # 手動実行ボタンも使えるようにする
 
 jobs:
-build:
-runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
 
-```
-steps:
-  - name: Checkout
-    uses: actions/checkout@v4
+      - name: JDK 8 をセットアップ
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '8'
 
-  - name: Set up JDK 8
-    uses: actions/setup-java@v4
-    with:
-      distribution: temurin
-      java-version: '8'
+      - name: gradlewに実行権限を付与
+        run: chmod +x gradlew
 
-  - name: Make Gradle Wrapper executable
-    run: chmod +x gradlew
+      - name: Gradleキャッシュを利用して高速化
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle') }}
 
-  - name: Check Gradle version
-    run: ./gradlew --version
+      - name: ビルド実行
+        run: ./gradlew build --stacktrace
 
-  - name: Clean
-    run: ./gradlew clean
-
-  - name: Generate MCP to SRG mappings
-    run: ./gradlew createMcpToSrg --rerun-tasks
-
-  - name: Check TSRG output
-    run: |
-      echo "=== Searching TSRG files ==="
-      find build -type f \( -name "*.tsrg" -o -name "*.srg" \) -print || true
-
-      echo "=== Checking for SRG CL: syntax inside TSRG ==="
-      if find build -name "*.tsrg" -type f -exec grep -H "^CL:" {} \; | grep -q .; then
-        echo "ERROR: Found SRG CL: syntax inside a .tsrg file"
-        exit 1
-      fi
-
-  - name: Build
-    run: ./gradlew build --stacktrace
-
-  - name: Upload build artifacts
-    if: always()
-    uses: actions/upload-artifact@v4
-    with:
-      name: ReplayMod-build
-      path: |
-        **/build/libs/*.jar
-        **/build/**/*.tsrg
-        **/build/**/*.srg
-        **/build/reports/**
-      if-no-files-found: warn
-
-  - name: Upload Gradle logs on failure
-    if: failure()
-    uses: actions/upload-artifact@v4
-    with:
-      name: build-debug
-      path: |
-        .gradle/**
-        **/build/**
-      if-no-files-found: warn
-```
+      - name: 成果物(jar)をアップロード
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-outputs
+          path: build/libs/*.jar
