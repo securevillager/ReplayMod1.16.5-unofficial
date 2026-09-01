@@ -429,10 +429,10 @@ public class CameraEntity
 
         Map<String, KeyBindingRegistry.Binding> keyBindings = ReplayMod.instance.getKeyBindingRegistry().getBindings();
         if (keyBindings.get("replaymod.input.rollclockwise").keyBinding.isKeyDown()) {
-            roll += Utils.isCtrlDown() ? 0.2 : 1;
+            roll += Utils.isCtrlDown() ? 0.2f : 1f;
         }
         if (keyBindings.get("replaymod.input.rollcounterclockwise").keyBinding.isKeyDown()) {
-            roll -= Utils.isCtrlDown() ? 0.2 : 1;
+            roll -= Utils.isCtrlDown() ? 0.2f : 1f;
         }
 
         this.noClip = this.isSpectator();
