@@ -116,7 +116,7 @@ public class GuiVideoRenderer extends GuiScreen implements Tickable {
     }
 
     //the total render time
-    private int renderTimeTaken = 0;
+    private long renderTimeTaken = 0;
 
     //the time at which the Screen was last updated
     private long prevTime = -1;
