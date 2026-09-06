@@ -8,18 +8,29 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(GameRenderer.class)
-public abstract class Mixin_Omnidirectional_Camera implements EntityRendererHandler.IEntityRenderer {
-    @Redirect(method = "method_22973", at = @At(value = "INVOKE", target ="Lnet/minecraft/util/math/vector/Matrix4f;perspective(FFFF)Lnet/minecraft/util/math/vector/Matrix4f;"
-    private Matrix4f replayModRender_perspective$0(double fovY, float aspect, float zNear, float zFar) {
-        return replayModRender_perspective((float) fovY, aspect, zNear, zFar);
-    }
+public abstract class Mixin_Omnidirectional_Camera
+        implements EntityRendererHandler.IEntityRenderer {
 
-    private Matrix4f replayModRender_perspective$0(
-        float fovY,
-        float aspect,
-        float zNear,
-        float zFar
+    @Redirect(
+            method = "getProjectionMatrix",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/util/math/vector/Matrix4f;perspective(DFFF)Lnet/minecraft/util/math/vector/Matrix4f;"
+            )
+    )
+    private Matrix4f replayModRender_perspective(
+            double fovY,
+            float aspect,
+            float zNear,
+            float zFar
     ) {
-    return replayModRender_perspective(fovY, aspect, zNear, zFar);
- }
+        EntityRendererHandler handler = replayModRender_getHandler();
+
+        if (handler != null && handler.omnidirectional) {
+            fovY = 90.0D;
+            aspect = 1.0F;
+        }
+
+        return Matrix4f.perspective(fovY, aspect, zNear, zFar);
+    }
 }
