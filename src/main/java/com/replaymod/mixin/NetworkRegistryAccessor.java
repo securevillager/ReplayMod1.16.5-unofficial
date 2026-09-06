@@ -7,10 +7,14 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 import java.util.List;
 
-@Mixin(NetworkRegistry.class)
+@Mixin(value = NetworkRegistry.class, remap = false)
 public interface NetworkRegistryAccessor {
-    @Invoker("gatherLoginPayloads")
-    static List<NetworkRegistry.LoginPayload> invokeGatherLoginPayloads(NetworkDirection direction, boolean isLocal) {
+
+    @Invoker(value = "gatherLoginPayloads", remap = false)
+    static List<NetworkRegistry.LoginPayload> invokeGatherLoginPayloads(
+            NetworkDirection direction,
+            boolean isLocal
+    ) {
         throw new AssertionError();
     }
 }
