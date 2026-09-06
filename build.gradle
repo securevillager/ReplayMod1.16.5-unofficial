@@ -117,7 +117,7 @@ minecraft {
         }
     }
 
-    mappings channel: 'snapshot', version: '20210309-1.16.4'
+    mappings channel: 'snapshot', version: '20210309-1.16.5'
 }
 
 repositories {
